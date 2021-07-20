@@ -28,11 +28,13 @@ const App = () => {
   const handleVote = () => {
     const copy = [...votes]
     copy[selected] += 1
+    const mostPopular = mostPopularIndex()
+    setIndex(mostPopular)
     console.log(copy)
     setVotes(copy)
     console.log(votes) 
-    const mostPopular = mostPopularIndex()
-    setIndex(mostPopular)    
+    
+        
     console.log(votes)
   }
 
