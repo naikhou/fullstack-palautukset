@@ -76,16 +76,16 @@ app.post('/api/persons', (req, res) => {
             error: 'nimi on jo luettelossa'
         })
     }
-    const uusi =
+    const person =
         {
             id: rand,
             name: body.name,
             number: body.number
         }
 
-    persons = persons.concat(uusi)
+    persons = persons.concat(person)
 
-    res.json(persons)
+    res.json(person)
 
 })
 
