@@ -30,13 +30,13 @@ const handleAdd = (event) => {
     personService
       .create(newPerson).then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
-        setMessage(`${newName} has been added to phonebook`)
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)  
         setNewName('')
         setNewNumber('')
       })
+      setMessage(`${newName} has been added to phonebook`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)  
     
   } else {
     if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {

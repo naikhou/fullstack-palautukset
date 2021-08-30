@@ -8,12 +8,20 @@ morgan.token('sisalto', function getData(req) {
 })
 const morganLogger = morgan(':method :url :status :res[content-length] - :response-time ms :sisalto')
 
-
+//middlewareja
 app.use(express.json())
 app.use(morganLogger)
+app.use(express.static('build'))
+//mahdollistaa cross-origin resourse sharingin, piti asentaa eka komennolla 'npm install cors'.
+//HEROKUn kanssa muista: 'heroku git push main' ei välttämättä toimi,
+//branchin nimi 'main' voi olla eri, esim. master.
+const cors = require('cors')
+
+app.use(cors())
+
 
 //kuunneltavan portin asettaminen
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
@@ -68,16 +76,16 @@ app.post('/api/persons', (req, res) => {
             error: 'nimi on jo luettelossa'
         })
     }
-    const uusi =
+    const person =
         {
             id: rand,
             name: body.name,
             number: body.number
         }
 
-    persons = persons.concat(uusi)
+    persons = persons.concat(person)
 
-    res.json(persons)
+    res.json(person)
 
 })
 
