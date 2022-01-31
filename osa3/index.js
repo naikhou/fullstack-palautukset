@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const app = express()
+const cors = require('cors')
 const Person = require('./models/person')
 
 //morganin määrittely
@@ -10,17 +11,25 @@ morgan.token('sisalto', function getData(req) {
 })
 const morganLogger = morgan(':method :url :status :res[content-length] - :response-time ms :sisalto')
 
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if(error.name === 'CastError'){
+        return response.status(400).send({ error: 'malformatted id' })
+    }
+
+    next(error)
+}
+
 //middlewareja
-app.use(express.json())
-app.use(morganLogger)
 app.use(express.static('build'))
 //mahdollistaa cross-origin resourse sharingin, piti asentaa eka komennolla 'npm install cors'.
+app.use(cors())
+app.use(express.json())
+app.use(morganLogger)
+
 //HEROKUn kanssa muista: 'heroku git push main' ei välttämättä toimi,
 //branchin nimi 'main' voi olla eri, esim. master.
-const cors = require('cors')
-
-app.use(cors())
-
 
 //kuunneltavan portin asettaminen
 const PORT = process.env.PORT
@@ -30,38 +39,8 @@ app.listen(PORT, () => {
 
 console.log('hello world')
 
-let persons = [
-    {
-        id: 1,
-        name: "Arto Hellas",
-        number: "040-123456"
-    },
-    {
-        id: 2,
-        name: "Ada Lovelace",
-        number: "39-44-5323523"
-    },
-    {
-        id: 3,
-        name: "Dan Abramov",
-        number: "12-43-234345"
-    },
-    {
-        id: 4,
-        name: "Mary Poppendick",
-        number: "39-23-6423122"
-    },
-    {
-        id: 5,
-        name: "Testi Testinen",
-        number: "000-654321"
-    }
-]
-
 //henkilön lisääminen
-app.post('/api/persons', (req, res) => {
-    //const rand = Math.floor(Math.random() * 10000)
-
+app.post('/api/persons', (req, res, next) => {
     const body = req.body
     if (!body.name) {
         return res.status(400).json({
@@ -73,11 +52,6 @@ app.post('/api/persons', (req, res) => {
             error: 'numero puuttuu'
         })
     }
-    /*if (persons.find(person => person.name === body.name)) {
-        return res.status(400).json({
-            error: 'nimi on jo luettelossa'
-        })
-    }*/
     const person = new Person({
       name: body.name,
       number: body.number
@@ -85,35 +59,20 @@ app.post('/api/persons', (req, res) => {
 
     person.save().then(savedPerson => {
         res.json(savedPerson)
-    }).catch((error) => {
-        console.log(error)
-    })
-
-    //persons = persons.concat(person)
-
-    //res.json(person)
+    }).catch((error) => next(error))
 })
-
 
 //henkilön poistaminen
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(person => person.id !== id)
-
-    res.status(204).end()
+app.delete('/api/persons/:id', (req, res, next) => {
+    Person.findByIdAndRemove(req.params.id)
+      .then(result => {
+        res.status(204).end()
+      })
+      .catch(error => next(error))
 })
 
-
 //yksittäisen henkilön hakeminen
-app.get('/api/persons/:id', (req, res) => {
-    /*const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)*/
-    //truthy/falsy-juttu
-    /*if(person) {
-        res.json(person)
-    } else {
-        res.status(404).end()
-    }*/
+app.get('/api/persons/:id', (req, res, next) => {
     Person.findById(req.params.id).then(person => {
       if(person){
         res.json(person)
@@ -121,16 +80,35 @@ app.get('/api/persons/:id', (req, res) => {
         res.status(404).end()
       }
     })
+    .catch(error => next(error))
 })
-
 
 //infosivu
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
     const date = Date()
-    const teksti = `Phonebook has ${persons.length} persons<br><br>${date}`
-    res.send(teksti)
+    Person.count({}, (err, count) => {
+        if(err){
+            next(err)
+        }
+        const teksti = `Phonebook has ${count} persons<br><br>${date}`
+        res.send(teksti)
+    })
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+  
+    const person = {
+      name: body.name,
+      number: body.number,
+    }
+  
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+      .then(updatedPerson => {
+        response.json(updatedPerson)
+      })
+      .catch(error => next(error))
+  })
 
 //kaikki henkilöt
 app.get('/api/persons', (request, response) => {
@@ -143,5 +121,7 @@ app.get('/api/persons', (request, response) => {
 app.get('/', (req, res) => {
     res.send('<h1>Hello World</h1>')
   })
+
+app.use(errorHandler)
 
 
