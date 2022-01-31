@@ -1,5 +1,7 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
+const Person = require('./models/person')
 
 //morganin määrittely
 const morgan = require('morgan')
@@ -21,7 +23,7 @@ app.use(cors())
 
 
 //kuunneltavan portin asettaminen
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
@@ -58,7 +60,7 @@ let persons = [
 
 //henkilön lisääminen
 app.post('/api/persons', (req, res) => {
-    const rand = Math.floor(Math.random() * 10000)
+    //const rand = Math.floor(Math.random() * 10000)
 
     const body = req.body
     if (!body.name) {
@@ -71,22 +73,25 @@ app.post('/api/persons', (req, res) => {
             error: 'numero puuttuu'
         })
     }
-    if (persons.find(person => person.name === body.name)) {
+    /*if (persons.find(person => person.name === body.name)) {
         return res.status(400).json({
             error: 'nimi on jo luettelossa'
         })
-    }
-    const person =
-        {
-            id: rand,
-            name: body.name,
-            number: body.number
-        }
+    }*/
+    const person = new Person({
+      name: body.name,
+      number: body.number
+    })
 
-    persons = persons.concat(person)
+    person.save().then(savedPerson => {
+        res.json(savedPerson)
+    }).catch((error) => {
+        console.log(error)
+    })
 
-    res.json(person)
+    //persons = persons.concat(person)
 
+    //res.json(person)
 })
 
 
@@ -101,14 +106,21 @@ app.delete('/api/persons/:id', (req, res) => {
 
 //yksittäisen henkilön hakeminen
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)
+    /*const id = Number(req.params.id)
+    const person = persons.find(person => person.id === id)*/
     //truthy/falsy-juttu
-    if(person) {
+    /*if(person) {
         res.json(person)
     } else {
         res.status(404).end()
-    }
+    }*/
+    Person.findById(req.params.id).then(person => {
+      if(person){
+        res.json(person)
+      } else {
+        res.status(404).end()
+      }
+    })
 })
 
 
@@ -122,7 +134,9 @@ app.get('/info', (req, res) => {
 
 //kaikki henkilöt
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
 //juuripolun käsittely
