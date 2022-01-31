@@ -17,6 +17,9 @@ const errorHandler = (error, request, response, next) => {
     if(error.name === 'CastError'){
         return response.status(400).send({ error: 'malformatted id' })
     }
+    if(error.name === 'ValidationError'){
+        return response.status(400).send({ error: error.message})
+    }
 
     next(error)
 }
@@ -42,16 +45,6 @@ console.log('hello world')
 //henkilön lisääminen
 app.post('/api/persons', (req, res, next) => {
     const body = req.body
-    if (!body.name) {
-        return res.status(400).json({
-            error: 'nimi puuttuu'
-        })
-    }
-    if (!body.number) {
-        return res.status(400).json({
-            error: 'numero puuttuu'
-        })
-    }
     const person = new Person({
       name: body.name,
       number: body.number
