@@ -4,7 +4,7 @@ const app = express()
 const cors = require('cors')
 const Person = require('./models/person')
 
-//morganin määrittely
+//morganin määrittely asd
 const morgan = require('morgan')
 morgan.token('sisalto', function getData(req) {
     return JSON.stringify(req.body)
