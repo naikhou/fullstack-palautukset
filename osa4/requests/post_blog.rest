@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "MoromoroUUSI",
+    "author": "laitettu vscodesta",
+    "url": "kuukkeli.com",
+    "likes": 100
+  }
