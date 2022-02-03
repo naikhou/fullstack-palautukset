@@ -1,5 +1,7 @@
 const dummy = (blogs) => {
-  console.log(blogs)
+  if(blogs.length === 100) {
+    console.log(blogs)
+  }
   return 1
 }
 
