@@ -38,8 +38,14 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id)
-  response.status(204).end()
+  const blogToRemove = await Blog.findById(request.params.id)
+  const token = request.token
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if(blogToRemove.user.toString() === decodedToken.id.toString()){
+    await Blog.findByIdAndRemove(request.params.id)
+    return response.status(204).end()
+  }
+  response.status(401).json({ error: 'ei oikeutta poistaa' })
 })
 
 blogsRouter.put('/:id', async (request, response) => {
