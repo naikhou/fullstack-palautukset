@@ -1,9 +1,9 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtvbG1hcyIsImlkIjoiNjIwZTVmMjJlMDU5MDBjMjM3YzMxNTBlIiwiaWF0IjoxNjQ1MTE1MzU3fQ.k5W7h_iKXD3wtTfTv7N2eU0RsZVfutJyJvHxJrVuN-I
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRva2EiLCJpZCI6IjYyMGU1ZWY5YmE5Y2YyYjUzOGJjZjE4NyIsImlhdCI6MTY0NTExNzg0Mn0.uX0eTaGkfeIr5zchsFAjJa2tZngoK77RDL6SCWUWfpw
 
 {
-    "title": "kolmaskolmas",
+    "title": "blogin lisäys tokenExtractorilla neljäs",
     "author": "asd",
     "url": "asd",
     "likes": 5
