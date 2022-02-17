@@ -4,6 +4,8 @@ const testHelper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -106,6 +108,95 @@ test('bad request if url and title are missing', async () => {
     .send(blogToAdd)
     .expect(400)
 })
+
+describe('user related tests', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('salkku', 10)
+    const initialUser = new User({
+      username: 'first',
+      passwordHash: passwordHash
+    })
+
+    await initialUser.save()
+  })
+
+  test('bad request if username or password length is less than 3', async () => {
+    const userToAdd = {
+      username: 'test',
+      name: '',
+      password: 'aa'
+    }
+    const userToAdd2 = {
+      username: 'aa',
+      name: '',
+      password: 'aaaa'
+    }
+    const userToAdd3 = {
+      username: 'aa',
+      name: '',
+      password: 'aa'
+    }
+
+    await api
+      .post('/api/users')
+      .send(userToAdd)
+      .expect(400)
+
+    await api
+      .post('/api/users')
+      .send(userToAdd2)
+      .expect(400)
+
+    await api
+      .post('/api/users')
+      .send(userToAdd3)
+      .expect(400)
+  })
+
+  test('user is not created if invalid username or password and proper message is shown', async () => {
+    const userToAdd = {
+      username: 'aa',
+      name: '',
+      password: 'aaaaa'
+    }
+
+    const dbUsersBefore = await testHelper.usersInDb()
+
+    const result = await api
+      .post('/api/users')
+      .send(userToAdd)
+      .expect(400)
+
+    expect(result.body.error).toContain('invalid username or password')
+
+    const dbUsersAfter = await testHelper.usersInDb()
+    expect(dbUsersAfter).toHaveLength(dbUsersBefore.length)
+  })
+
+  test('user will not be added and proper response is received if username is already taken', async () => {
+    const userToAdd = {
+      username: 'first',
+      name: '',
+      password: 'random'
+    }
+
+    const dbUsersBefore = await testHelper.usersInDb()
+
+    const result = await api
+      .post('/api/users')
+      .send(userToAdd)
+      .expect(400)
+
+    expect(result.body.error).toContain('username has already been taken')
+
+    const dbUsersAfter = await testHelper.usersInDb()
+    expect(dbUsersAfter).toHaveLength(dbUsersBefore.length)
+  })
+})
+
+
 
 afterAll(() => {
   mongoose.connection.close()
