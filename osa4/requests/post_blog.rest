@@ -1,9 +1,10 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtvbG1hcyIsImlkIjoiNjIwZTVmMjJlMDU5MDBjMjM3YzMxNTBlIiwiaWF0IjoxNjQ1MTE1MzU3fQ.k5W7h_iKXD3wtTfTv7N2eU0RsZVfutJyJvHxJrVuN-I
 
 {
-    "title": "seuraava tadaa",
-    "author": "laitettu vscodesta",
-    "url": "kuukkeli.com",
-    "likes": 100
+    "title": "kolmaskolmas",
+    "author": "asd",
+    "url": "asd",
+    "likes": 5
   }
