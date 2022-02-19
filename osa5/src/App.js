@@ -62,6 +62,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
+    //poistetaan tieto käyttäjästä selaimen localstoragesta
     window.localStorage.removeItem('userLoggedIn')
   }
 
