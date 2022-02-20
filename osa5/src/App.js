@@ -96,7 +96,7 @@ const App = () => {
     return (
     <>
     <h2>log in to application</h2>
-    <Notification message={notificationMessage} error={true}/>
+    <Notification message={notificationMessage} isError={true}/>
     <form onSubmit={handleLogin}>
       <div> username
         <input type="text" onChange={handleNameChange} value={username} name="Username"></input>
@@ -112,7 +112,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={notificationMessage} error={false}/>
+      <Notification message={notificationMessage} isError={false}/>
       <p>{`${user.name} logged in`} <button type="submit" onClick={handleLogout}>logout</button></p>  
       <Togglable ref={blogFormRef} buttonLabel='new blog'>
         <CreateBlogForm createBlog={handleCreateBlog}/>
