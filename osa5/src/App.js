@@ -19,37 +19,37 @@ const App = () => {
       setBlogs( blogs.sort((a,b) => {
         return b.likes - a.likes
       }) )
-    )  
+    )
   }, [blogsChanged])
 
   useEffect(() => {
-      const loggedUserJSON = window.localStorage.getItem('userLoggedIn')
-      if(loggedUserJSON) {
-        const user = JSON.parse(loggedUserJSON)
-        setUser(user)
-        blogService.setToken(user.token)
-      }
+    const loggedUserJSON = window.localStorage.getItem('userLoggedIn')
+    if(loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
   }, [])
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    console.log("logging in")
+    console.log('logging in')
     try {
-    const user = await loginService.login({ username, password })
+      const user = await loginService.login({ username, password })
 
-    window.localStorage.setItem('userLoggedIn', JSON.stringify(user))
+      window.localStorage.setItem('userLoggedIn', JSON.stringify(user))
 
-    blogService.setToken(user.token)
-    setUser(user)
-    setUsername('')
-    setPassword('')
-    
-  } catch (error) {
-    setNotificationMessage('wrong username or password')
-    setTimeout(() => {
-      setNotificationMessage(null)
-    }, 3000)
-  }
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+
+    } catch (error) {
+      setNotificationMessage('wrong username or password')
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 3000)
+    }
 
   }
 
@@ -94,26 +94,26 @@ const App = () => {
   if (user === null) {
     //login form
     return (
-    <>
-    <h2>log in to application</h2>
-    <Notification message={notificationMessage} isError={true}/>
-    <form onSubmit={handleLogin}>
-      <div> username
-        <input type="text" onChange={handleNameChange} value={username} name="Username"></input>
-      </div>
-      <div> password
-        <input type="text" onChange={handlePasswordChange} value={password} name="Password"></input>
-      </div>
-      <button type="submit">login</button>
-    </form>
-    </>)
+      <>
+        <h2>log in to application</h2>
+        <Notification message={notificationMessage} isError={true}/>
+        <form onSubmit={handleLogin}>
+          <div> username
+            <input type="text" onChange={handleNameChange} value={username} name="Username"></input>
+          </div>
+          <div> password
+            <input type="text" onChange={handlePasswordChange} value={password} name="Password"></input>
+          </div>
+          <button type="submit">login</button>
+        </form>
+      </>)
   }
 
   return (
     <div>
       <h2>blogs</h2>
       <Notification message={notificationMessage} isError={false}/>
-      <p>{`${user.name} logged in`} <button type="submit" onClick={handleLogout}>logout</button></p>  
+      <p>{`${user.name} logged in`} <button type="submit" onClick={handleLogout}>logout</button></p>
       <Togglable ref={blogFormRef} buttonLabel='new blog'>
         <CreateBlogForm createBlog={handleCreateBlog}/>
       </Togglable>

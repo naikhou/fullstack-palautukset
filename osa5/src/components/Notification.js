@@ -1,4 +1,4 @@
-import propTypes from "prop-types"
+import propTypes from 'prop-types'
 
 const Notification = ({ message, isError }) => {
   if (message === null) {

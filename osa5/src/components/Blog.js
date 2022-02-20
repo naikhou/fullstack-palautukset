@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import propTypes from 'prop-types'
 
-const Blog = ({blog, updateBlog, removeBlog, user}) => {
+const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   const [viewAll, setViewAll] = useState(false)
   const username = user.username
 
@@ -27,29 +27,29 @@ const Blog = ({blog, updateBlog, removeBlog, user}) => {
   }
 
   return (
-  <>
-    <div style={blogStyle}>
-      {blog.title} {blog.author} <button onClick={()=>setViewAll(!viewAll)}>view</button>
-      {viewAll && (
-      <>
-        <div>{blog.url}</div>
-        <div>likes {blog.likes}<button onClick={handleLike}>like</button></div>
-        <div>{blog.user.username}</div>
-        { username === blog.user.username && (
-          <button onClick={handleRemove}>remove</button>
-        )
-        }
-      </>
-    )}
-    </div>
-    
-  </>
-)}
+    <>
+      <div style={blogStyle}>
+        {blog.title} {blog.author} <button onClick={() => setViewAll(!viewAll)}>view</button>
+        {viewAll && (
+          <>
+            <div>{blog.url}</div>
+            <div>likes {blog.likes}<button onClick={handleLike}>like</button></div>
+            <div>{blog.user.username}</div>
+            { username === blog.user.username && (
+              <button onClick={handleRemove}>remove</button>
+            )
+            }
+          </>
+        )}
+      </div>
+
+    </>
+  )}
 
 Blog.propTypes = {
   blog: propTypes.object.isRequired,
-  updateBlog: propTypes.func.isRequired, 
-  removeBlog: propTypes.func.isRequired, 
+  updateBlog: propTypes.func.isRequired,
+  removeBlog: propTypes.func.isRequired,
   user: propTypes.object.isRequired
 }
 
