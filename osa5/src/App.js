@@ -99,10 +99,10 @@ const App = () => {
         <Notification message={notificationMessage} isError={true}/>
         <form onSubmit={handleLogin}>
           <div> username
-            <input type="text" onChange={handleNameChange} value={username} name="Username"></input>
+            <input type="text" onChange={handleNameChange} value={username} name="Username" id='username'></input>
           </div>
           <div> password
-            <input type="text" onChange={handlePasswordChange} value={password} name="Password"></input>
+            <input type="text" onChange={handlePasswordChange} value={password} name="Password" id='password'></input>
           </div>
           <button type="submit">login</button>
         </form>
@@ -110,16 +110,18 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div id='blog-view'>
       <h2>blogs</h2>
       <Notification message={notificationMessage} isError={false}/>
       <p>{`${user.name} logged in`} <button type="submit" onClick={handleLogout}>logout</button></p>
       <Togglable ref={blogFormRef} buttonLabel='new blog'>
         <CreateBlogForm createBlog={handleCreateBlog}/>
       </Togglable>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={handleUpdateBlog} removeBlog={handleRemoveBlog} user={user}/>
-      )}
+      <ul id='blog-list'>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} updateBlog={handleUpdateBlog} removeBlog={handleRemoveBlog} user={user}/>
+        )}
+      </ul>
     </div>
   )
 }

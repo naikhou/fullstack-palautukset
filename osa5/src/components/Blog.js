@@ -28,12 +28,12 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
 
   return (
     <>
-      <div style={blogStyle}>
+      <div style={blogStyle} data-testid='title-and-author'>
         {blog.title} {blog.author} <button onClick={() => setViewAll(!viewAll)}>view</button>
         {viewAll && (
           <>
-            <div>{blog.url}</div>
-            <div>likes {blog.likes}<button onClick={handleLike}>like</button></div>
+            <div data-testid='url'>{blog.url}</div>
+            <div data-testid='likes' className='likes'>likes {blog.likes}<button onClick={handleLike}>like</button></div>
             <div>{blog.user.username}</div>
             { username === blog.user.username && (
               <button onClick={handleRemove}>remove</button>
